@@ -1,0 +1,34 @@
+name: TDeck ESP32-S3 Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  esp32s3-tdeck:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential ninja-build cmake git python3-pip
+
+    - name: Build ESP32-S3 TDeck (SPIRAM_OCT, 8MB RAM, 16MB Octal Flash)
+      run: |
+        python3 make.py esp32 \
+          BOARD=ESP32_GENERIC_S3 \
+          BOARD_VARIANT=SPIRAM_OCT \
+          --flash-size=16 \
+          --octal-flash \
+          DISPLAY=st7789 \
+          INDEV=gt911
